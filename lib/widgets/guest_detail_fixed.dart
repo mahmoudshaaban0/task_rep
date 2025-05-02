@@ -273,7 +273,7 @@ class _GuestDetailState extends State<GuestDetail> {
 
                 // Right section: Stats and loyalty sections
                 Expanded(
-                  flex: 3,
+                  flex: 5,
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
