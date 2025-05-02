@@ -95,7 +95,7 @@ class _GuestBookScreenState extends State<GuestBookScreen> {
     final currentTime = '$hour : $minute AM';
 
     return Scaffold(
-      backgroundColor: AppColors.background,
+      backgroundColor: const Color(0xFFF8F8F8),
       body: SafeArea(
         child: Column(
           children: [

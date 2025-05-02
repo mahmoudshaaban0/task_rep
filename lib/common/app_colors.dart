@@ -13,7 +13,7 @@ class AppColors {
   static const Color accentDark = Color(0xFF2A58D0);
 
   // Background colors
-  static const Color background = Color(0xffF8F8F8);
+  static const Color background = Color(0xFFF5F5F7);
   static const Color card = Colors.white;
   static const Color searchBackground = Color(0xFFF0F0F0);
   static const Color backgroundContainer = Color(0xFFF8F8F8);

@@ -96,8 +96,11 @@ class _GuestDetailState extends State<GuestDetail> {
                     scrollDirection: Axis.horizontal,
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
-                      decoration:
-                          BoxDecoration(color: Colors.white, borderRadius: AppRadius.medium, boxShadow: AppShadows.medium),
+                      decoration: BoxDecoration(
+                        boxShadow: AppShadows.medium,
+                        color: Colors.white,
+                        borderRadius: AppRadius.medium,
+                      ),
                       child: Row(
                         mainAxisSize: MainAxisSize.min,
                         children: List.generate(
@@ -174,104 +177,384 @@ class _GuestDetailState extends State<GuestDetail> {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          // Guest profile header
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              CircleAvatar(
-                radius: 32,
-                backgroundColor: avatarColor,
-                child: Text(
-                  widget.guest.avatarInitials ?? '',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: ResponsiveUtils.responsiveFontSize(context, 18.0),
-                    fontWeight: FontWeight.bold,
+          // Guest profile section with divider and stats
+          Container(
+            padding: AppSpacing.paddingM,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: AppRadius.medium,
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 2,
+                  offset: const Offset(0, 1),
+                ),
+              ],
+            ),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                // Left section: Avatar, name, email, phone, button
+                Expanded(
+                  flex: 2,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      // Avatar
+                      CircleAvatar(
+                        radius: 45,
+                        backgroundColor: avatarColor,
+                        child: Text(
+                          widget.guest.avatarInitials ?? '',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 22.0,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                      AppSpacing.verticalSpaceM,
+
+                      // Guest info
+                      Text(
+                        widget.guest.fullName,
+                        style: TextStyle(
+                          fontSize: 18.0,
+                          fontWeight: FontWeight.bold,
+                          color: Colors.black,
+                        ),
+                      ),
+                      AppSpacing.verticalSpaceXs,
+                      Text(
+                        widget.guest.email,
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      AppSpacing.verticalSpaceXs,
+                      Text(
+                        widget.guest.phoneNumber,
+                        style: TextStyle(
+                          fontSize: 14.0,
+                          fontWeight: FontWeight.normal,
+                          color: Colors.black87,
+                        ),
+                      ),
+                      AppSpacing.verticalSpaceM,
+
+                      // Add Tags button
+                      ElevatedButton(
+                        onPressed: () {},
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black87,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(24),
+                          ),
+                        ),
+                        child: const Text('Add Tags'),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-              AppSpacing.horizontalSpaceM,
 
-              // Guest info
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      widget.guest.fullName,
-                      style: TextStyle(
-                        fontSize: ResponsiveUtils.responsiveFontSize(context, 18.0),
-                        fontWeight: FontWeight.bold,
-                        color: Colors.black,
-                      ),
-                    ),
-                    AppSpacing.verticalSpaceXxxs,
-                    Text(
-                      widget.guest.email,
-                      style: TextStyle(
-                        fontSize: ResponsiveUtils.responsiveFontSize(context, 14.0),
-                        fontWeight: FontWeight.normal,
-                        color: Colors.black87,
-                      ),
-                    ),
-                    AppSpacing.verticalSpaceXxxs,
-                    Text(
-                      widget.guest.phoneNumber,
-                      style: TextStyle(
-                        fontSize: ResponsiveUtils.responsiveFontSize(context, 14.0),
-                        fontWeight: FontWeight.normal,
-                        color: Colors.black87,
-                      ),
-                    ),
-                  ],
+                // Vertical divider
+                Container(
+                  height: 250,
+                  width: 1,
+                  margin: const EdgeInsets.symmetric(horizontal: 16),
+                  color: Colors.grey[300],
                 ),
-              ),
-            ],
+
+                // Right section: Stats and loyalty sections
+                Expanded(
+                  flex: 3,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      // Statistics row in light gray background
+                      Container(
+                        padding: AppSpacing.paddingM,
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8F8F8),
+                          borderRadius: AppRadius.medium,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            _buildStatItemNew('Last Visit', widget.guest.lastVisit ?? '--/--'),
+                            _buildStatItemNew('Average Spend', '\$${widget.guest.averageSpend?.toStringAsFixed(2) ?? '0.00'}'),
+                            _buildStatItemNew('Lifetime Spend', '\$${widget.guest.averageSpend?.toStringAsFixed(2) ?? '0.00'}'),
+                            _buildStatItemNew('Total Orders', '${widget.guest.totalOrders ?? 0}'),
+                            _buildStatItemNew('Average Tip', '\$${widget.guest.averageTip?.toStringAsFixed(2) ?? '0.00'}'),
+                          ],
+                        ),
+                      ),
+                      AppSpacing.verticalSpaceM,
+
+                      // Three-column loyalty and visits section
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // Loyalty with RF
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF8F8F8),
+                                borderRadius: AppRadius.small,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: Text('Loyalty',
+                                            style: TextStyle(
+                                                fontSize: ResponsiveUtils.responsiveFontSize(context, 14),
+                                                fontWeight: FontWeight.bold)),
+                                      ),
+                                      Flexible(
+                                        child: Text('RF',
+                                            style: TextStyle(
+                                              fontSize: ResponsiveUtils.responsiveFontSize(context, 14),
+                                              fontWeight: FontWeight.bold,
+                                              overflow: TextOverflow.ellipsis,
+                                            )),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8),
+                                  // Since field
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: Text('Since',
+                                            style: TextStyle(
+                                                fontSize: ResponsiveUtils.responsiveFontSize(context, 13),
+                                                fontWeight: FontWeight.w500)),
+                                      ),
+                                      Flexible(
+                                        child: Text('Enter',
+                                            style: TextStyle(
+                                                fontSize: ResponsiveUtils.responsiveFontSize(context, 13), color: Colors.grey)),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8),
+                                  // Birthday field
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(
+                                              child: Text('Birthday',
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(
+                                                      fontSize: ResponsiveUtils.responsiveFontSize(context, 12),
+                                                      fontWeight: FontWeight.w500)),
+                                            ),
+                                            SizedBox(width: 4),
+                                            Icon(Icons.cake,
+                                                size: ResponsiveUtils.responsiveFontSize(context, 13), color: Colors.grey),
+                                          ],
+                                        ),
+                                      ),
+                                      Flexible(child: Text('Enter', style: TextStyle(fontSize: 13, color: Colors.grey))),
+                                    ],
+                                  ),
+                                  SizedBox(height: 8),
+                                  // Anniversary field
+                                  Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Flexible(
+                                        child: Row(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Flexible(
+                                              child: Text('Anniversary',
+                                                  overflow: TextOverflow.ellipsis,
+                                                  style: TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
+                                            ),
+                                            SizedBox(width: 4),
+                                            Icon(Icons.favorite, size: 12, color: Colors.grey),
+                                          ],
+                                        ),
+                                      ),
+                                      Text('Enter', style: TextStyle(fontSize: 13, color: Colors.grey)),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+
+                          // LOYALTY stats
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF8F8F8),
+                                borderRadius: AppRadius.small,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('LOYALTY', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                                  SizedBox(height: 12),
+                                  // Loyalty stats in 2x2 grid
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      _buildLoyaltyStatItem('0', 'Earned'),
+                                      _buildLoyaltyStatItem('0', 'Redeemed'),
+                                    ],
+                                  ),
+                                  SizedBox(height: 12),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      _buildLoyaltyStatItem('0', 'Available'),
+                                      _buildLoyaltyStatItem('\$ 00.00', 'Amount'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 8),
+
+                          // VISITS stats
+                          Expanded(
+                            child: Container(
+                              padding: const EdgeInsets.all(8),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF8F8F8),
+                                borderRadius: AppRadius.small,
+                              ),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text('VISITS', style: TextStyle(fontSize: 14, fontWeight: FontWeight.bold)),
+                                  SizedBox(height: 12),
+                                  // Visits stats in 2x2 grid
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      _buildLoyaltyStatItem('0', 'Total Visits'),
+                                      _buildLoyaltyStatItem('0', 'Upcoming'),
+                                    ],
+                                  ),
+                                  SizedBox(height: 12),
+                                  Row(
+                                    mainAxisSize: MainAxisSize.max,
+                                    children: [
+                                      _buildLoyaltyStatItem('0', 'Canceled'),
+                                      _buildLoyaltyStatItem('0', 'No Shows'),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      AppSpacing.verticalSpaceM,
+
+                      // Order and vehicle info
+                      Row(
+                        children: [
+                          Expanded(
+                            child: Container(
+                              padding: AppSpacing.paddingM,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF8F8F8),
+                                borderRadius: AppRadius.small,
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.shopping_bag, color: Colors.grey),
+                                  AppSpacing.horizontalSpaceM,
+                                  Flexible(
+                                    child: Text('No Ordered Items',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          AppSpacing.horizontalSpaceM,
+                          Expanded(
+                            child: Container(
+                              padding: AppSpacing.paddingM,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFF8F8F8),
+                                borderRadius: AppRadius.small,
+                              ),
+                              child: Row(
+                                children: [
+                                  Icon(Icons.directions_car, color: Colors.grey),
+                                  AppSpacing.horizontalSpaceM,
+                                  Flexible(
+                                    child: Text('No Recent Vehicle To Show',
+                                        overflow: TextOverflow.ellipsis,
+                                        style: TextStyle(fontSize: 14, fontWeight: FontWeight.w500)),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ],
+            ),
           ),
 
           AppSpacing.verticalSpaceM,
 
-          // Statistics row
-          _buildStatsRow(),
-
-          AppSpacing.verticalSpaceM,
-
-          // Loyalty section
-          _buildSectionHeader('LOYALTY'),
-          AppSpacing.verticalSpaceS,
-          _buildLoyaltySection(),
-
-          AppSpacing.verticalSpaceM,
-
-          // Allergies section
+          // Remaining original sections - unchanged
           _buildSectionHeader('ALLERGIES'),
           AppSpacing.verticalSpaceS,
           _buildAllergySection(),
 
           AppSpacing.verticalSpaceM,
 
-          // Upcoming visits section
           _buildSectionHeader('UPCOMING VISITS'),
           AppSpacing.verticalSpaceS,
           _buildUpcomingVisitsSection(),
 
           AppSpacing.verticalSpaceM,
 
-          // Notes section
           _buildSectionHeader('NOTES'),
           AppSpacing.verticalSpaceS,
           _buildNotesSection(),
 
           AppSpacing.verticalSpaceM,
 
-          // Recent orders section
           _buildSectionHeader('RECENT ORDERS'),
           AppSpacing.verticalSpaceS,
           _buildRecentOrdersSection(),
 
           AppSpacing.verticalSpaceM,
 
-          // Online reviews section
           _buildSectionHeader('ONLINE REVIEWS'),
           AppSpacing.verticalSpaceS,
           _buildOnlineReviewsSection(),
@@ -280,27 +563,19 @@ class _GuestDetailState extends State<GuestDetail> {
     );
   }
 
-  Widget _buildStatsRow() {
-    return Row(
-      children: [
-        _buildStatItem('Last Visit', widget.guest.lastVisit ?? '--/--'),
-        _buildStatItem('Average Spend', '\$${widget.guest.averageSpend?.toStringAsFixed(2) ?? '0.00'}'),
-        _buildStatItem('Lifetime Spend', '\$${widget.guest.averageSpend?.toStringAsFixed(2) ?? '0.00'}'),
-        _buildStatItem('Total Orders', '${widget.guest.totalOrders ?? 0}'),
-        _buildStatItem('Average Tip', '\$${widget.guest.averageTip?.toStringAsFixed(2) ?? '0.00'}'),
-      ],
-    );
-  }
-
-  Widget _buildStatItem(String label, String value) {
-    return Expanded(
+  // New helper methods for the profile tab
+  Widget _buildStatItemNew(String label, String value) {
+    return Flexible(
+      flex: 1,
+      fit: FlexFit.loose,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
             value,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: ResponsiveUtils.responsiveFontSize(context, 16.0),
+              fontSize: 14,
               fontWeight: FontWeight.bold,
               color: Colors.black,
             ),
@@ -308,10 +583,40 @@ class _GuestDetailState extends State<GuestDetail> {
           AppSpacing.verticalSpaceXxxs,
           Text(
             label,
+            overflow: TextOverflow.ellipsis,
             style: TextStyle(
-              fontSize: ResponsiveUtils.responsiveFontSize(context, 12.0),
+              fontSize: 12,
               fontWeight: FontWeight.normal,
               color: AppColors.textSecondary,
+            ),
+            textAlign: TextAlign.center,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLoyaltyStatItem(String value, String label) {
+    return Flexible(
+      flex: 1,
+      fit: FlexFit.loose,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Text(
+            value,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          Text(
+            label,
+            overflow: TextOverflow.ellipsis,
+            style: TextStyle(
+              fontSize: 12,
+              color: Colors.grey[700],
             ),
             textAlign: TextAlign.center,
           ),
@@ -323,136 +628,20 @@ class _GuestDetailState extends State<GuestDetail> {
   Widget _buildSectionHeader(String title) {
     return Row(
       children: [
-        Text(
-          title,
-          style: TextStyle(
-            color: AppColors.textSecondary,
-            fontSize: ResponsiveUtils.responsiveFontSize(context, 12.0),
-            fontWeight: FontWeight.w600,
+        Flexible(
+          child: Text(
+            title,
+            style: TextStyle(
+              color: AppColors.textSecondary,
+              fontSize: ResponsiveUtils.responsiveFontSize(context, 12.0),
+              fontWeight: FontWeight.w600,
+            ),
           ),
         ),
         const Spacer(),
         // If we have a specific icon for this section, add it here
         if (title == 'LOYALTY') Icon(Icons.redeem, size: 14, color: AppColors.textSecondary),
       ],
-    );
-  }
-
-  Widget _buildLoyaltySection() {
-    return Container(
-      padding: AppSpacing.paddingS,
-      decoration: BoxDecoration(
-        border: Border.all(color: AppColors.border),
-        borderRadius: AppRadius.small,
-      ),
-      child: Column(
-        children: [
-          // First row: Points earned, redeemed, total visits
-          Row(
-            children: [
-              _buildLoyaltyItem('0', 'Earned'),
-              _buildLoyaltyItem('0', 'Redeemed'),
-              _buildLoyaltyItem('0', 'Total Visits'),
-              _buildLoyaltyItem('0', 'Upcoming'),
-            ],
-          ),
-          AppSpacing.verticalSpaceM,
-          // Second row: Points available, amount, cancelled, no shows
-          Row(
-            children: [
-              _buildLoyaltyItem('0', 'Available'),
-              _buildLoyaltyItem('\$ 00.00', 'Amount'),
-              _buildLoyaltyItem('0', 'Canceled'),
-              _buildLoyaltyItem('0', 'No Shows'),
-            ],
-          ),
-          AppSpacing.verticalSpaceM,
-          // Third row: Special fields
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text('Since', style: AppTextStyles.labelMedium),
-                        const Spacer(),
-                        Text('Enter', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-              AppSpacing.horizontalSpaceM,
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text('Birthday', style: AppTextStyles.labelMedium),
-                        AppSpacing.horizontalSpaceXxxs,
-                        Icon(Icons.cake, size: 12, color: AppColors.textSecondary),
-                        const Spacer(),
-                        Text('Enter', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-          AppSpacing.verticalSpaceM,
-          // Fourth row: Anniversary
-          Row(
-            children: [
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Row(
-                      children: [
-                        Text('Anniversary', style: AppTextStyles.labelMedium),
-                        AppSpacing.horizontalSpaceXxxs,
-                        Icon(Icons.favorite, size: 12, color: AppColors.textSecondary),
-                        const Spacer(),
-                        Text('Enter', style: TextStyle(color: Colors.grey, fontSize: 12)),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildLoyaltyItem(String value, String label) {
-    return Expanded(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Text(
-            value,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          AppSpacing.verticalSpaceXxxs,
-          Text(
-            label,
-            style: TextStyle(
-              fontSize: 12,
-              color: AppColors.textSecondary,
-            ),
-            textAlign: TextAlign.center,
-          ),
-        ],
-      ),
     );
   }
 
@@ -483,7 +672,7 @@ class _GuestDetailState extends State<GuestDetail> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: AppColors.primary,
-                borderRadius: AppRadius.large,
+                borderRadius: AppRadius.small,
               ),
               child: Text(
                 'Add',
@@ -526,7 +715,7 @@ class _GuestDetailState extends State<GuestDetail> {
               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               decoration: BoxDecoration(
                 color: AppColors.primary,
-                borderRadius: AppRadius.large,
+                borderRadius: AppRadius.small,
               ),
               child: Text(
                 'Book A Visit',
@@ -565,6 +754,11 @@ class _GuestDetailState extends State<GuestDetail> {
       children: [
         Row(
           children: [
+            Text(
+              title,
+              style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w600),
+            ),
+            const Spacer(),
             Icon(
               title == 'General'
                   ? Icons.note
@@ -578,12 +772,6 @@ class _GuestDetailState extends State<GuestDetail> {
               size: 16,
               color: AppColors.textSecondary,
             ),
-            AppSpacing.horizontalSpaceXs,
-            Text(
-              title,
-              style: AppTextStyles.labelMedium.copyWith(fontWeight: FontWeight.w600),
-            ),
-            const Spacer(),
           ],
         ),
         AppSpacing.verticalSpaceXxxs,
@@ -601,10 +789,10 @@ class _GuestDetailState extends State<GuestDetail> {
 
   Widget _buildRecentOrdersSection() {
     return Container(
-      height: 96,
       padding: AppSpacing.paddingS,
       decoration: BoxDecoration(
-        borderRadius: AppRadius.large,
+        border: Border.all(color: AppColors.border),
+        borderRadius: AppRadius.small,
       ),
       child: Row(
         children: [
@@ -612,14 +800,12 @@ class _GuestDetailState extends State<GuestDetail> {
             Icons.receipt_long,
             color: AppColors.textSecondary,
           ),
-          VerticalDivider(
-            color: Colors.grey.shade50,
-            width: 3,
-          ),
           AppSpacing.horizontalSpaceM,
-          Text(
-            'No Recent Orders to Show',
-            style: AppTextStyles.bodyMedium,
+          Flexible(
+            child: Text(
+              'No Recent Orders to Show',
+              style: AppTextStyles.bodyMedium,
+            ),
           ),
         ],
       ),
@@ -650,7 +836,6 @@ class _GuestDetailState extends State<GuestDetail> {
       child: Container(
         padding: AppSpacing.paddingM,
         decoration: BoxDecoration(
-          color: Colors.white,
           border: Border(
             bottom: BorderSide(
               color: AppColors.divider,
